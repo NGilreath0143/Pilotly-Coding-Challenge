@@ -1,42 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
-import { AddressCollection } from '../../api/collections';
-import { isValidCoordinates } from '../utils/coordinateUtils'
 
-const MEAN_EARTH_RADIUS_KM = 6371.009;
-const DEGREES_IN_RADIAN = 57.29577951;
-const KILOMETRES_IN_MILE = 1.60934;
+import { AddressCollection } from '../../api/collections';
+import { calculateDistance } from '../utils/coordinateUtils'
 
 export const AddressList = (props) => {
   const addresses = useTracker(() => {
-    return AddressCollection.find().fetch();
+    var addressList = AddressCollection.find({ "$where": function(record) {
+        var distance = calculateDistance(record.longitude,record.latitude, props.userLongitude, props.userLatitude);
+        return distance < 1000 && distance !== -1
+      }
+    }).fetch();
+    addressList.forEach((address) => {
+      address.distance = calculateDistance(address.longitude,address.latitude, props.userLongitude, props.userLatitude);
+    });
+    addressList.sort((address1, address2) => { return address1.distance - address2.distance});
+    return addressList;
   });
 
-  const convertDegreesToRadians = (degrees) => {
-    return degrees / DEGREES_IN_RADIAN;
-  }
-  const convertRadiansToDegrees = (radians) => {
-    return radians * DEGREES_IN_RADIAN
-  }
-  const calculateDistance = (locationLongitude, locationLatitude) => {
-    const userLongitudeInRadians = convertDegreesToRadians(Number(props.userLongitude));
-    const userLatitudeInRadians = convertDegreesToRadians(Number(props.userLatitude));
-    const locationLongitudeInRadians = convertDegreesToRadians(Number(locationLongitude));
-    const locationLatitudeInRadians = convertDegreesToRadians(Number(locationLatitude));
-    const longitudeDifference = Math.abs(userLongitudeInRadians - locationLongitudeInRadians);
-
-    const centralAngleInRadians = Math.acos(Math.sin(userLatitudeInRadians)
-                                          * Math.sin(locationLatitudeInRadians)
-                                          + Math.cos(userLatitudeInRadians)
-                                          * Math.cos(locationLatitudeInRadians)
-                                          * Math.cos(longitudeDifference))
-    const centralAngleInDegrees = convertRadiansToDegrees(centralAngleInRadians);
-    const distanceInKilometers = MEAN_EARTH_RADIUS_KM * centralAngleInRadians;
-    return distanceInKilometers.toFixed(2);
-  }
-  
   return (
     <div>
+      {addresses && addresses.length > 0 ? (
       <table>
         <thead>
           <tr>
@@ -51,26 +35,24 @@ export const AddressList = (props) => {
         <tbody>
         {addresses.map(
           address => {
-            if (isValidCoordinates(address.longitude, address.latitude)) {
-              return (
-                <tr key={address._id}>
-                  <td>{address.street_number} {address.route}</td>
-                  <td>{address.locality}</td>
-                  <td>{address.administrativeArea}</td>
-                  <td>{address.country}</td>
-                  <td>{address.postalCode}</td>
-                  { isValidCoordinates(props.userLongitude, props.userLatitude) ? 
-                    <td>{calculateDistance(address.longitude, address.latitude)} km</td> 
-                    : 
-                    <td>-</td>
-                  }
-                </tr>
-              )
-            }
+            return (
+              <tr key={address._id}>
+                <td>{address.street_number} {address.route}</td>
+                <td>{address.locality}</td>
+                <td>{address.administrativeArea}</td>
+                <td>{address.country}</td>
+                <td>{address.postalCode}</td>
+                <td>{address.distance} km</td> 
+              </tr>
+            )
           }
         )}
         </tbody>
       </table>
+      )
+      :
+      null
+      }
     </div>
   );
 };

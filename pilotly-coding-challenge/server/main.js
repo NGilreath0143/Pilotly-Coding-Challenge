@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { AddressCollection } from '/imports/api/collections';
-import '/imports/api/addressMethods';
 
 function insertAddress({ latitude, longitude, street_number, route, locality, administrativeArea, country, postalCode }) {
   AddressCollection.insert({latitude, longitude, street_number, route, locality, administrativeArea, country, postalCode, createdAt: new Date()});

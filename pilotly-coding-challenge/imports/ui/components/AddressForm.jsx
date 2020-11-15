@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
-import { useTracker } from 'meteor/react-meteor-data';
-import { AddressCollection } from '../../api/collections';
+
 import { isValidCoordinates } from '../utils/coordinateUtils'
 
 export const AddressForm = (props) => {
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [maxDistance, setMaxDistance] = useState("");
-  const filterAddresses = () => {
-    const addresses = useTracker(() =>
-      AddressCollection.find({administrativeArea: "CA"}, {
-        sort: { createdAt: -1 },
-      }).fetch()
-    );
-    console.log(addresses)
-  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -23,7 +14,6 @@ export const AddressForm = (props) => {
       return;
     }
 
-    // Meteor.call('addresses.searchAddressesInRangeByAddress', text);
     props.setUserLongitude(longitude);
     props.setUserLatitude(latitude);
   }
