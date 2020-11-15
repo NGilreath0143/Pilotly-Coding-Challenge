@@ -6,13 +6,13 @@ import { calculateDistance } from '../utils/coordinateUtils'
 
 export const AddressList = (props) => {
   const addresses = useTracker(() => {
-    var addressList = AddressCollection.find({ "$where": function(record) {
-        var distance = calculateDistance(record.longitude,record.latitude, props.userLongitude, props.userLatitude);
-        return distance < 1000 && distance !== -1
+    var addressList = AddressCollection.find({ "$where": function(address) {
+        var distance = calculateDistance(address.latitude, address.longitude, props.userLatitude, props.userLongitude);
+        return distance < props.maxDistance && distance !== -1;
       }
     }).fetch();
     addressList.forEach((address) => {
-      address.distance = calculateDistance(address.longitude,address.latitude, props.userLongitude, props.userLatitude);
+      address.distance = calculateDistance(address.latitude, address.longitude, props.userLatitude, props.userLongitude);
     });
     addressList.sort((address1, address2) => { return address1.distance - address2.distance});
     return addressList;
