@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
-import { AddressCollection } from '../../api/collections';
-import { calculateDistance } from '../utils/coordinateUtils'
+import { AddressCollection } from '../../../api/collections';
+import { calculateDistance } from '../../utils/coordinateUtils'
 
-export const AddressList = (props) => {
+const AddressList = (props) => {
   const addresses = useTracker(() => {
     var addressList = AddressCollection.find({ "$where": function(address) {
         var distance = calculateDistance(address.latitude, address.longitude, props.userLatitude, props.userLongitude);
@@ -56,3 +56,5 @@ export const AddressList = (props) => {
     </div>
   );
 };
+
+export default AddressList;

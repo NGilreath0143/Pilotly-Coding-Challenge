@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { AddressList } from './components/AddressList.jsx';
-import { AddressForm } from './components/AddressForm.jsx';
+import AddressList from './components/AddressList';
+import AddressForm from './components/AddressForm';
 
 export const App = () =>{
   const [userLatitude, setUserLatitude] = useState("");
