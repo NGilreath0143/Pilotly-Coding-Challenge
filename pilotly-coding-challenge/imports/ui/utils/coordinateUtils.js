@@ -1,3 +1,5 @@
+import { AddressConstants } from './constants'
+
 const MEAN_EARTH_RADIUS_KM = 6371.009;
 const DEGREES_IN_RADIAN = 57.29577951;
 const KILOMETRES_IN_MILE = 1.60934;
@@ -5,7 +7,6 @@ const KILOMETRES_IN_MILE = 1.60934;
 export const isValidCoordinates = (latitude, longitude) => {
   var tempLatitude = Number(latitude);
   var tempLongitude = Number(longitude);
-
 
   if (!isValidCoordinate(latitude) || !isValidCoordinate(longitude)) {
     return false;
@@ -46,9 +47,13 @@ export const calculateDistance = (latitude1, longitude1, latitude2, longitude2) 
 
   const distanceInKilometers = MEAN_EARTH_RADIUS_KM * centralAngleInRadians;
 
-  return Number(distanceInKilometers.toFixed(2));
+  return distanceInKilometers;
 }
 
 export const isValidDistance = (distance) => {
   return distance != null && distance !== "" && !isNaN(Number(distance)) && Number(distance) >= 0;
+}
+
+export const convertKilometersToMiles = (kilometers) => {
+  return kilometers/KILOMETRES_IN_MILE;
 }

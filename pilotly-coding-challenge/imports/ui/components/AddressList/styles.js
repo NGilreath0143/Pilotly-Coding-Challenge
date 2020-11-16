@@ -23,3 +23,7 @@ export const Table = styled.table`
         padding: 8px;
     }
 `;
+
+export const ResultText = styled.p`
+    text-align: center;
+`;
