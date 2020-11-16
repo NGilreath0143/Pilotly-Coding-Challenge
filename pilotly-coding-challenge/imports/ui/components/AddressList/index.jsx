@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
+import { Table } from './styles';
 import { AddressCollection } from '../../../api/collections';
 import { calculateDistance } from '../../utils/coordinateUtils'
 
@@ -21,7 +22,7 @@ const AddressList = (props) => {
   return (
     <div>
       {addresses && addresses.length > 0 ? (
-      <table>
+      <Table>
         <thead>
           <tr>
             <th>Street Address</th>
@@ -48,10 +49,10 @@ const AddressList = (props) => {
           }
         )}
         </tbody>
-      </table>
+      </Table>
       )
       :
-      null
+      <p>0 results found. Try a different location or increasing the search radius.</p>
       }
     </div>
   );

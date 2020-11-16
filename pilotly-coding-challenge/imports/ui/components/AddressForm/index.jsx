@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import {DistanceField, DistanceMetricSelect, InputField, FormContainer, SearchByTypeSelect, SubmitButton} from './styles'
 import AddressInputs from "./AddressInputs";
 import CoordinateInputs from "./CoordinateInputs";
 import { AddressConstants } from "../../utils/constants";
@@ -15,7 +16,7 @@ const AddressForm = (props) => {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [searchByType, setSearchByType] = useState(
-    AddressConstants.SearchByType.ADDRESS
+    AddressConstants.SearchByType.COORDINATES
   );
 
   const handleSubmit = (e) => {
@@ -82,41 +83,47 @@ const AddressForm = (props) => {
 
   const onSearchByTypeChangeEventHandler = (event) => {
     setSearchByType(event.target.value);
-    console.log(event.target.value);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>Search by </label>
-      <select
-        defaultValue={searchByType}
-        onChange={onSearchByTypeChangeEventHandler}
-      >
-        <option value={AddressConstants.SearchByType.ADDRESS}>Address</option>
-        <option value={AddressConstants.SearchByType.COORDINATES}>
-          Coordinates
-        </option>
-      </select>
-      <br />
-      {searchByType === AddressConstants.SearchByType.ADDRESS ? (
-        <AddressInputs address={address} setAddress={setAddress} />
-      ) : (
-        <CoordinateInputs
-          latitude={latitude}
-          longitude={longitude}
-          setLatitude={setLatitude}
-          setLongitude={setLongitude}
+    <FormContainer>
+      <form onSubmit={handleSubmit}>
+        <label>Search by </label>
+        <SearchByTypeSelect
+          defaultValue={searchByType}
+          onChange={onSearchByTypeChangeEventHandler}
+        >
+          <option value={AddressConstants.SearchByType.ADDRESS}>Address</option>
+          <option value={AddressConstants.SearchByType.COORDINATES}>
+            Coordinates
+          </option>
+        </SearchByTypeSelect>
+        <br />
+        {searchByType === AddressConstants.SearchByType.ADDRESS ? (
+          <AddressInputs address={address} setAddress={setAddress} />
+        ) : (
+          <CoordinateInputs
+            latitude={latitude}
+            longitude={longitude}
+            setLatitude={setLatitude}
+            setLongitude={setLongitude}
+          />
+        )}
+        <br />
+        <label>Distance</label>
+        <DistanceField
+          type="text"
+          placeholder="Maximum Distance"
+          value={distance}
+          onChange={(e) => setDistance(e.target.value)}
         />
-      )}
-      <br />
-      <input
-        type="text"
-        placeholder="Maximum Distance"
-        value={distance}
-        onChange={(e) => setDistance(e.target.value)}
-      />
-      <button type="submit">Submit</button>
-    </form>
+        <DistanceMetricSelect defaultValue="0">
+          <option value="0">km</option>
+          <option value="1">mi</option>
+        </DistanceMetricSelect>
+        <SubmitButton type="submit">Submit</SubmitButton>
+      </form>
+    </FormContainer>
   );
 };
 

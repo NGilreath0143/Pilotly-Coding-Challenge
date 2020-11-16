@@ -1,10 +1,11 @@
 import React from "react";
 
-
+import { AddressInputField } from "./styles"
 const AddressInputs = (props) => {
   return (
     <>
-      <input
+      <label>Address</label>
+      <AddressInputField
         type="text"
         placeholder="Address"
         value={props.address}
